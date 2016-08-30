@@ -173,7 +173,7 @@ string choose_char_on_right(char c1, char c2) {
 
 string choose_char_on_left(char c1, char c2) {
 	string result = "";
-	for (int i = 5; i >= 1; --i)
+	for (int i = 4; i >= 0; --i)
 	{
 		for (int j = 5; j >= 1; --j)
 		{
@@ -184,7 +184,7 @@ string choose_char_on_left(char c1, char c2) {
 		}
 	}
 
-	for (int i = 5; i >= 1; --i)
+	for (int i = 4; i >= 0; --i)
 	{
 		for (int j = 5; j >= 1; --j)
 		{
@@ -364,6 +364,8 @@ void do_encrypt() {
 		result_5_group += " ";
 	}
 	cout << result_5_group << endl;
+
+	cout << "Plain again = " << decrypt(encrypt(divided_plain(plain))) << endl;
 }
 
 void do_decrypt() {
