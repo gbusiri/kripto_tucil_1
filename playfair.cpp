@@ -44,65 +44,6 @@ string generate_key(string key) {
 	return result;
 }
 
-string divided_plain(string plain_full) {
-	string result = "";
-	string plain = "";
-	for (int i = 0; i < plain_full.size(); ++i)
-	{
-		if (plain_full[i] != ' ') {
-			plain += plain_full[i];
-		}
-	}
-
-	int i = 0;
-	while (i < plain.size()) {
-		if (plain.size() - i == 1) {
-			if (plain[i] == 'J') {
-				result += "I";
-			}
-			else {
-				result += plain[i];
-			}
-
-			result += "Z";
-			i++;
-		}
-		else {
-			string temp = plain.substr(i, 2);
-			if ((temp[0] != 'J') && (temp[1] != 'J')) {
-				if (temp[0] == temp[1]) {
-					result += temp[0];
-					result += "Z";
-					i++;
-				}
-				else {
-					result += temp;
-					i += 2;
-				}
-			}
-			else {
-				if (temp[0] == temp[1]) {
-					result += "IZ";
-					i++;
-				}
-				else {
-					if (temp[0] == 'J') {
-						result += "I";
-						result += temp[1];
-					}
-					else if (temp[1] == 'J') {
-						result += temp[0];
-						result += "I";
-					}
-					i += 2;
-				}
-			}
-		}
-	}
-
-	return result;
-}
-
 bool is_same_row(char c1, char c2) {
 	int row1, row2;
 	for (int i = 0; i < 5; ++i)
@@ -287,40 +228,66 @@ string choose_char_square(char c1, char c2) {
 	return result;
 }
 
-string encrypt(string plain) {
-	string cipher = "";
-	for (int i = 0; i < plain.size(); i+=2)
-	{
-		string temp = plain.substr(i, 2);
-		if (is_same_row(temp[0], temp[1])) {
-			cipher += choose_char_on_right(temp[0], temp[1]);
+string choose_char_encrypt(char c1, char c2) {
+	if (is_same_row(c1, c2)) return choose_char_on_right(c1, c2);
+	if (is_same_column(c1, c2)) return choose_char_on_bottom(c1, c2);
+	return choose_char_square(c1, c2);
+}
+
+string choose_char_decrypt(char c1, char c2) {
+	if (is_same_row(c1, c2)) return choose_char_on_left(c1, c2);
+	if (is_same_column(c1, c2)) return choose_char_on_top(c1, c2);
+	return choose_char_square(c1, c2);
+}
+
+string encrypt(const string& plain) {
+	string cipher, space;
+	char last_c = 0;
+	for (int i = 0; i < plain.size(); ++i) {
+		char c = plain[i];
+		if (c >= 'A' && c <= 'Z') {
+			if (c == 'J') c = 'I';
+			if (last_c) {
+				char cur_c = (last_c == c) ? 'Z' : c;
+				string c_cipher = choose_char_encrypt(last_c, cur_c);
+				cipher += c_cipher[0];
+				cipher += space;
+				cipher += c_cipher[1];
+
+				last_c = (last_c == c) ? c : 0;
+				space.clear();
+			}
+			else last_c = c;
 		}
-		else if (is_same_column(temp[0], temp[1])) {
-			cipher += choose_char_on_bottom(temp[0], temp[1]);
-		}
-		else {
-			cipher += choose_char_square(temp[0], temp[1]);
-		}
+		else if (!last_c) cipher += c;
+		else space += c;
 	}
+	if (last_c) cipher += choose_char_encrypt(last_c, 'Z');
 
 	return cipher;
 }
 
-string decrypt(string cipher) {
-	string plain = "";
-	for (int i = 0; i < cipher.size(); i+=2)
-	{
-		string temp = cipher.substr(i, 2);
-		if (is_same_row(temp[0], temp[1])) {
-			plain += choose_char_on_left(temp[0], temp[1]);
+string decrypt(const string& cipher) {
+	string plain, space;
+	char last_c = 0;
+	for (int i = 0; i < cipher.size(); ++i) {
+		char c = cipher[i];
+		if (c >= 'A' && c <= 'Z') {
+			if (last_c) {
+				string c_plain = choose_char_decrypt(last_c, c);
+				plain += c_plain[0];
+				plain += space;
+				plain += c_plain[1];
+
+				last_c = 0;
+				space.clear();
+			}
+			else last_c = c;
 		}
-		else if (is_same_column(temp[0], temp[1])) {
-			plain += choose_char_on_top(temp[0], temp[1]);
-		}
-		else {
-			plain += choose_char_square(temp[0], temp[1]);
-		}
+		else if (!last_c) plain += c;
+		else space += c;
 	}
+	assert(last_c == 0);
 
 	return plain;
 }
@@ -336,36 +303,24 @@ void do_encrypt() {
 
 	create_table_key(generate_key(key));
 
+	string result = encrypt(plain);
 	cout << "Cipher : " << endl;
 
-	string result = encrypt(divided_plain(plain));
-
-	//MASIH NGACO
 	cout << "==== Apa Adanya : ";
-	string result_apa_adanya = "";
+	cout << result << endl;
+
+	string tanpa_spasi;
 	for (int i = 0; i < result.size(); ++i)
-	{
-		if (plain[i] == ' ') {
-			result_apa_adanya += ' ';
-			result_apa_adanya += result[i];
-		}
-		else {
-			result_apa_adanya += result[i];
-		}
-	}
-	cout << result_apa_adanya << endl;
+		if (result[i] != ' ') tanpa_spasi += result[i];
+	cout << "==== Tanpa Spasi : " << tanpa_spasi << endl;
 
-	cout << "==== Tanpa Spasi : " << result << endl;
 	cout << "==== Kelompok 5 huruf : ";
-	string result_5_group = "";
-	for (int i = 0; i < result.size(); i+=5)
-	{
-		result_5_group += result.substr(i, 5);
-		result_5_group += " ";
+	for (int i = 0; i < tanpa_spasi.size(); i += 5) {
+		cout << tanpa_spasi.substr(i, 5);
+		cout << (i + 5 >= tanpa_spasi.size() ? '\n' : ' ');
 	}
-	cout << result_5_group << endl;
 
-	cout << "Plain again = " << decrypt(encrypt(divided_plain(plain))) << endl;
+	cout << "Plain again = " << decrypt(encrypt(plain)) << endl;
 }
 
 void do_decrypt() {
