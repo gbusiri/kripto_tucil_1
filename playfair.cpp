@@ -2,229 +2,116 @@
 using namespace std;
 
 const int N = 30;
-char table_key[N][N];
-int is_alphabet_use[N];
+char table_key[N][N], table_row[N], table_col[N];
 
-void create_table_key(string key) {
+void create_table_key(const string& key) {
 	int temp = 0;
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			table_key[i][j] = key[temp++];
+	for (int i = 0; i < 5; ++i) {
+		for (int j = 0; j < 5; ++j) {
+			char c = key[temp++];
+			table_key[i][j] = c;
+			table_row[c-'A'] = i;
+			table_col[c-'A'] = j;
 		}
-
 		table_key[i][5] = table_key[i][0];
 	}
 
-	for (int i = 0; i < 5; ++i)
-	{
+	for (int i = 0; i < 5; ++i) {
 		table_key[5][i] = table_key[0][i];
 	}
 }
 
-string generate_key(string key) {
-	string result = "";
-	memset(is_alphabet_use, 0, sizeof is_alphabet_use);
-	for (int i = 0; i < key.size(); ++i)
-	{
-		if ((key[i] != 'J') && (!is_alphabet_use[key[i]-'A'])) {
+string generate_key(const string& key) {
+	bool char_used[N];
+	string result;
+
+	for (int i = 0; i < key.size(); ++i) {
+		assert(key[i] >= 'A' && key[i] <= 'Z');
+		if ((key[i] != 'J') && (!char_used[key[i]-'A'])) {
 			result += key[i];
-			is_alphabet_use[key[i]-'A'] = 1;
+			char_used[key[i]-'A'] = 1;
 		}
 	}
 
-	for (int i = 0; i < 26; ++i)
-	{
-		if ((!is_alphabet_use[i]) && (i != 9)) {
-			result += 'A'+i;
-		}
-	}
+	for (char c = 'A'; c <= 'Z'; ++c)
+		if ((!char_used[c-'A']) && (c != 'J'))
+			result += c;
 
 	return result;
 }
 
 bool is_same_row(char c1, char c2) {
-	int row1, row2;
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c1)
-				row1 = i;
-
-			if (table_key[i][j] == c2)
-				row2 = i;
-		}
-	}
-
-	if (row1 == row2)
-		return true;
-	else
-		return false;
+	return table_row[c1-'A'] == table_row[c2-'A'];
 }
 
 bool is_same_column(char c1, char c2) {
-	int column1, column2;
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c1)
-				column1 = j;
-
-			if (table_key[i][j] == c2)
-				column2 = j;
-		}
-	}
-
-	if (column1 == column2)
-		return true;
-	else
-		return false;
+	return table_col[c1-'A'] == table_col[c2-'A'];
 }
 
 string choose_char_on_right(char c1, char c2) {
-	string result = "";
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c1) {
-				result += table_key[i][j+1];
-				break;
-			}
-		}
-	}
+	string result;
+	int r, c;
 
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c2) {
-				result += table_key[i][j+1];
-				break;
-			}
-		}
-	}
+	r = table_row[c1-'A'];
+	c = table_col[c1-'A'];
+	result += table_key[r][(c+1)%5];
 
-	// cout << "rgh = " << c1 << " " << c2 << endl;
+	r = table_row[c2-'A'];
+	c = table_col[c2-'A'];
+	result += table_key[r][(c+1)%5];
+
 	return result;
 }
 
 string choose_char_on_left(char c1, char c2) {
-	string result = "";
-	for (int i = 4; i >= 0; --i)
-	{
-		for (int j = 5; j >= 1; --j)
-		{
-			if (table_key[i][j] == c1) {
-				result += table_key[i][j-1];
-				break;
-			}
-		}
-	}
+	string result;
+	int r, c;
 
-	for (int i = 4; i >= 0; --i)
-	{
-		for (int j = 5; j >= 1; --j)
-		{
-			if (table_key[i][j] == c2) {
-				result += table_key[i][j-1];
-				break;
-			}
-		}
-	}
-	//cout << "left = " << result << endl;
+	r = table_row[c1-'A'];
+	c = table_col[c1-'A'];
+	result += table_key[r][(c+4)%5];
+
+	r = table_row[c2-'A'];
+	c = table_col[c2-'A'];
+	result += table_key[r][(c+4)%5];
+
 	return result;
 }
 
 string choose_char_on_top(char c1, char c2) {
-	string result = "";
-	for (int i = 5; i >= 1; --i)
-	{
-		for (int j = 4; j >= 0; --j)
-		{
-			if (table_key[i][j] == c1) {
-				result += table_key[i-1][j];
-				break;
-			}
-		}
-	}
+	string result;
+	int r, c;
 
-	for (int i = 4; i >= 0; --i)
-	{
-		for (int j = 4; j >= 0; --j)
-		{
-			if (table_key[i][j] == c2) {
-				result += table_key[i-1][j];
-				break;
-			}
-		}
-	}
-	//cout << "top = " << result << endl;
+	r = table_row[c1-'A'];
+	c = table_col[c1-'A'];
+	result += table_key[(r+4)%5][c];
+
+	r = table_row[c2-'A'];
+	c = table_col[c2-'A'];
+	result += table_key[(r+4)%5][c];
+
 	return result;
 }
 
 string choose_char_on_bottom(char c1, char c2) {
-	string result = "";
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c1) {
-				result += table_key[i+1][j];
-				break;
-			}
-		}
-	}
+	string result;
+	int r, c;
 
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c2) {
-				result += table_key[i+1][j];
-				break;
-			}
-		}
-	}
+	r = table_row[c1-'A'];
+	c = table_col[c1-'A'];
+	result += table_key[(r+1)%5][c];
 
-	// cout << "bot = " << c1 <<  " " << c2 << endl;
+	r = table_row[c2-'A'];
+	c = table_col[c2-'A'];
+	result += table_key[(r+1)%5][c];
+
 	return result;
 }
 
 string choose_char_square(char c1, char c2) {
-	string result = "";
-	int row1, row2, column1, column2;
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c1) {
-				row1 = i;
-				column1 = j;
-				break;
-			}
-		}
-	}
-
-	for (int i = 0; i < 5; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			if (table_key[i][j] == c2) {
-				row2 = i;
-				column2 = j;
-				break;
-			}
-		}
-	}
-
-	result += table_key[row1][column2];
-	result += table_key[row2][column1];
-
-	// cout << "squ = " << c1 << " " << c2 << endl;
+	string result;
+	result += table_key[table_row[c1-'A']][table_col[c2-'A']];
+	result += table_key[table_row[c2-'A']][table_col[c1-'A']];
 	return result;
 }
 
