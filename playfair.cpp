@@ -25,7 +25,7 @@ void create_table_key(string key) {
 
 string generate_key(string key) {
 	string result = "";
-	memset(is_alphabet_use, 0, N);
+	memset(is_alphabet_use, 0, sizeof is_alphabet_use);
 	for (int i = 0; i < key.size(); ++i)
 	{
 		if ((key[i] != 'J') && (!is_alphabet_use[key[i]-'A'])) {
