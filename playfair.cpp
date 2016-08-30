@@ -130,7 +130,7 @@ bool is_same_column(char c1, char c2) {
 		for (int j = 0; j < 5; ++j)
 		{
 			if (table_key[i][j] == c1)
-				column2 = j;
+				column1 = j;
 
 			if (table_key[i][j] == c2)
 				column2 = j;
