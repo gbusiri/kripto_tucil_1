@@ -199,6 +199,14 @@ void do_encrypt() {
 		cout << tanpa_spasi.substr(i, 5);
 		cout << (i + 5 >= tanpa_spasi.size() ? '\n' : ' ');
 	}
+
+	const string file_name = "cipher.txt";
+    ofstream f(file_name.c_str(), ios::out|ios::binary);
+    f << cipher;
+    f.close();
+
+    cout << "\n";
+    cout << "Ciphertext tersimpan dalam file " << file_name << endl;
 }
 
 void do_decrypt() {
@@ -208,6 +216,14 @@ void do_decrypt() {
 	string plain = decrypt(cipher);
 
 	cout << "==== Tanpa Spasi : " << plain << endl;
+
+	const string file_name = "plain.txt";
+    ofstream f(file_name.c_str(), ios::out|ios::binary);
+    f << plain;
+    f.close();
+
+    cout << "\n";
+    cout << "Plaintext tersimpan dalam file " << file_name << endl;
 }
 
 void menu() {
