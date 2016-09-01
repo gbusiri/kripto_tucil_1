@@ -29,8 +29,23 @@ void do_encrypt() {
     cout << plain << endl;
 
     cout << "\n";
-    cout << "Cipher:\n";
+    cout << "Cipher (Apa Adanya):\n";
     cout << cipher << endl;
+
+    cout << "Cipher (Tanpa Spasi):\n";
+    string tanpa_spasi;
+    for (int i = 0; i < cipher.size(); ++i) {
+        if (cipher[i] == ' ') continue;
+        tanpa_spasi += cipher[i];
+    }
+    cout << tanpa_spasi << "\n";
+
+    cout << "Cipher (Kelompok 5 Huruf):\n";
+    for (int i = 0; i < tanpa_spasi.size(); i += 5) {
+        if (i) cout << ' ';
+        cout << tanpa_spasi.substr(i, 5);
+    }
+    cout << "\n";
 
     const string file_name = "cipher.txt";
     ofstream f(file_name.c_str(), ios::out|ios::binary);
