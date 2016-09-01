@@ -27,7 +27,7 @@ string generate_key(const string& key) {
 	string result;
 
 	for (int i = 0; i < key.size(); ++i) {
-		assert(key[i] >= 'A' && key[i] <= 'Z');
+		if (key[i] < 'A' || key[i] > 'Z') continue;
 		if ((key[i] != 'J') && (!char_used[key[i]-'A'])) {
 			result += key[i];
 			char_used[key[i]-'A'] = 1;
@@ -175,8 +175,6 @@ string decrypt(const string& cipher) {
 		else if (!last_c) plain += c;
 		else space += c;
 	}
-	assert(last_c == 0);
-
 	return plain;
 }
 
