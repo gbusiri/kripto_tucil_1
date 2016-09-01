@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "util.h"
 using namespace std;
 
 const int N = 30;
@@ -180,25 +181,17 @@ string decrypt(const string& cipher) {
 }
 
 void do_encrypt() {
-	string plain, cipher, key;
-
-	cout << "Plain : ";
-	getline(cin,plain);
-
-	cout << "Key : ";
-	cin >> key;
-
+	string plain = get_input();
+	string key = get_key();
 	create_table_key(generate_key(key));
-
-	string result = encrypt(plain);
-	cout << "Cipher : " << endl;
+	string cipher = encrypt(plain);
 
 	cout << "==== Apa Adanya : ";
-	cout << result << endl;
+	cout << cipher << endl;
 
 	string tanpa_spasi;
-	for (int i = 0; i < result.size(); ++i)
-		if (result[i] != ' ') tanpa_spasi += result[i];
+	for (int i = 0; i < cipher.size(); ++i)
+		if (cipher[i] != ' ') tanpa_spasi += cipher[i];
 	cout << "==== Tanpa Spasi : " << tanpa_spasi << endl;
 
 	cout << "==== Kelompok 5 huruf : ";
@@ -206,26 +199,15 @@ void do_encrypt() {
 		cout << tanpa_spasi.substr(i, 5);
 		cout << (i + 5 >= tanpa_spasi.size() ? '\n' : ' ');
 	}
-
-	cout << "Plain again = " << decrypt(encrypt(plain)) << endl;
 }
 
 void do_decrypt() {
-	string plain, cipher, key;
-
-	cout << "Cipher : ";
-	getline(cin, cipher);
-
-	cout << "Key : ";
-	cin >> key;
-
+	string cipher = get_input();
+	string key = get_key();
 	create_table_key(generate_key(key));
+	string plain = decrypt(cipher);
 
-	cout << "Plain : " << endl;
-
-	string result = decrypt(cipher);
-
-	cout << "==== Tanpa Spasi : " << result << endl;
+	cout << "==== Tanpa Spasi : " << plain << endl;
 }
 
 void menu() {
