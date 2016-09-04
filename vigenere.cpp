@@ -137,46 +137,6 @@ void menu() {
 }
 
 int main() {
-	// string plain, key, cipher, cipher_non_space = "", cipher_five = "";
-	// int * lengthOfBytesFile;
-	// ofstream file, file_plain, file_cipher;
-
-	// instance_table();
-
-	// cout << "Plain : ";
-	// getline(cin, plain);
-
-	// cout << "Key : ";
-	// cin >> key;
-
-	// file.open("output.txt");
-	// cout << "Cipher : " << endl;
-
-	// cipher = encrypt(plain, key);
-	// cout << "==== Apa adanya : " << cipher << endl;
-	// file << "==== Apa adanya : " << cipher << endl;
-	// cout << "==== Tanpa spasi : ";
-	// file << "==== Tanpa spasi : ";
-	// for (int i = 0; i < cipher.size(); ++i)
-	// {
-	// 	if (isAlphabet(cipher[i])) {
-	// 		cipher_non_space += cipher[i];
-	// 	}
-	// }
-	// cout << cipher_non_space << endl;
-	// file << cipher_non_space + "\n";
-
-	// cout << "==== Kelompok 5 huruf : ";
-	// file << "==== Kelompok 5 huruf : ";
-	// for (int i = 0; i < cipher_non_space.size(); i+=5)
-	// {
-	// 	cipher_five += cipher_non_space.substr(i, 5) + " ";
-	// }
-	// cout << cipher_five << endl;
-	// file << cipher_five + "\n";
-	// file.close();
-	// cout << "Plain Again From Cipher = " << decrypt(cipher, key) << endl;
-
 	menu();
 	return 0;
 }
