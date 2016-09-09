@@ -26,12 +26,13 @@ bool isAlphabet(char s) {
 string encrypt(string plain, string key) {
 	string cipher = "";
 	int temp;
-
+	int j = 0;
 	for (int i = 0; i < plain.size(); ++i)
 	{	
 		if (isAlphabet(plain[i])) {
-			temp = (plain[i]+key[i%key.size()]) % 26;
+			temp = ((plain[i])+key[j%key.size()]) % 26;
 			cipher += table_alphabet[temp];
+			j++;
 		}
 		else {
 			cipher += plain[i];
